@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox fx:id="layout" spacing="15" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gamebox.memory.MemoryGameController"
+      stylesheets="@style.css"
+      >
+<padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label fx:id="emojiLabel" text="❓" style="-fx-font-size: 70px;" />
+    <Label fx:id="scoreLabel" text="Score: 0" />
+    <Label fx:id="timerLabel" text="Time: 5" visible="false" />
+    
+    <VBox fx:id="choicesBox" spacing="10">
+        <Button fx:id="choice0" prefWidth="150"/>
+        <Button fx:id="choice1" prefWidth="150"/>
+        <Button fx:id="choice2" prefWidth="150"/>
+        <Button fx:id="choice3" prefWidth="150"/>
+    </VBox>
+
+    <Label fx:id="resultLabel" text="" />
+    
+    <HBox spacing="10">
+        <Button fx:id="nextBtn" text="Next Card" />
+        <Button fx:id="backBtn" text="🔙 Back" />
+        <Button fx:id="exitBtn" text="❌ Exit" />
+    </HBox>
+
+</VBox>

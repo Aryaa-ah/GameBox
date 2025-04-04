@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER" spacing="10"
+      fx:controller="com.gamebox.cardmatch.CardMatchController">
+    <Label fx:id="timerLabel" text="Time: 0s" style="-fx-font-size: 16px;" visible="false" />
+    <GridPane fx:id="gridPane" hgap="10" vgap="10" alignment="CENTER"/>
+    <Button fx:id="exitButton" text="❌ Exit to Menu" />
+</VBox>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gamebox.pathfinder.PathFinderController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <GridPane fx:id="gridPane" hgap="5" vgap="5" />
+    <Label fx:id="moveLabel" text="Moves: 0" />
+    <Label fx:id="timerLabel" text="Time: 0s" visible="false" />
+    <HBox spacing="10">
+        <Button fx:id="newGridBtn" text="🔄 New Grid" />
+        <Button fx:id="findPathBtn" text="🧠 Show Path" />
+    </HBox>
+    <Button fx:id="exitButton" text="❌ Exit to Menu" />
+</VBox>

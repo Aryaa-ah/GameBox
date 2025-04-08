@@ -20,7 +20,7 @@ public class PathFinderView {
             PathFinderController controller = loader.getController();
             controller.setStage(stage);
 
-            return new Scene(root, 400, 500);
+            return new Scene(root, 800, 600);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

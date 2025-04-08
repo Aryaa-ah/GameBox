@@ -150,12 +150,22 @@ public class PathFinderController implements Initializable {
     }
 
     private void showSuccessDialog() {
+    	highlightShortestPath();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Path Completed");
         alert.setHeaderText("🎉 You reached the goal!");
 
-        String timeInfo = useTimer ? "Time: " + (System.currentTimeMillis() - startTime) / 1000 + "s\n" : "";
-        alert.setContentText("Well done!\n" + timeInfo + "Moves: " + moveCount + "\nPlay again?");
+        String timeInfo = useTimer ? "⏱ Time: " + (System.currentTimeMillis() - startTime) / 1000 + "s\n" : "";
+
+        // Calculate shortest path length using BFS
+        int shortestMoves = game.findShortestPathBFS().size() - 1; // excluding start node
+
+        alert.setContentText(
+            "Well done!\n" +
+            timeInfo +
+            "🧍 Your Moves: " + moveCount + "\n" +
+            "📍 Shortest Path: " + shortestMoves + " moves\n\nPlay again?"
+        );
 
         ButtonType playAgain = new ButtonType("🔁 New Grid");
         ButtonType exit = new ButtonType("❌ Exit to Menu");
@@ -174,4 +184,7 @@ public class PathFinderController implements Initializable {
             }
         });
     }
+    
+    
+
 }

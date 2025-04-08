@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<VBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER" spacing="10"
-      fx:controller="com.gamebox.cardmatch.CardMatchController">
-    <Label fx:id="timerLabel" text="Time: 0s" style="-fx-font-size: 16px;" visible="false" />
-    <GridPane fx:id="gridPane" hgap="10" vgap="10" alignment="CENTER"/>
-    <Button fx:id="exitButton" text="❌ Exit to Menu" />
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gamebox.cardmatch.CardMatchController"
+      alignment="CENTER" spacing="20" stylesheets="@/com/gamebox/css/cardmatch.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="🃏 Card Match Game" styleClass="heading"/>
+
+    <Label fx:id="infoLabel" text="Moves: 0" styleClass="info"/>
+
+    <GridPane fx:id="cardGrid" hgap="10" vgap="10" alignment="CENTER"/>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="restartBtn" text="🔁 Restart"/>
+        <Button fx:id="exitBtn" text="❌ Exit"/>
+    </HBox>
 </VBox>

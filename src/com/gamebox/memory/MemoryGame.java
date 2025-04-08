@@ -1,65 +1,72 @@
 package com.gamebox.memory;
 
-import com.gamebox.models.Flashcard;
-import com.gamebox.utils.FlashcardStack;
-
 import java.util.*;
 
+import com.gamebox.models.Flashcard;
+
 public class MemoryGame {
-    private final List<Flashcard> flashcards = new ArrayList<>();
-    private final FlashcardStack<Flashcard> shownStack = new FlashcardStack<>();
-    private int currentIndex = 0;
-    private int score = 0;
+    private final List<Flashcard> cards;
+    private int currentIndex;
+    private int score;
+    private int time;
 
     public MemoryGame() {
-        loadFlashcards();
-        Collections.shuffle(flashcards);
+        cards = new ArrayList<>();
+        initializeCards();
+        Collections.shuffle(cards);
+        currentIndex = 0;
+        score = 0;
+        time = 0;
     }
 
-    private void loadFlashcards() {
-        flashcards.add(new Flashcard("🍎", "Apple", "Fruit"));
-        flashcards.add(new Flashcard("🐶", "Dog", "Animal"));
-        flashcards.add(new Flashcard("🚗", "Car", "Vehicle"));
-        flashcards.add(new Flashcard("🎵", "Music", "Sound"));
-        flashcards.add(new Flashcard("🍌", "Banana", "Fruit"));
-        flashcards.add(new Flashcard("🐱", "Cat", "Animal"));
-        flashcards.add(new Flashcard("🚲", "Bicycle", "Vehicle"));
-        flashcards.add(new Flashcard("🎸", "Guitar", "Sound"));
+    private void initializeCards() {
+        cards.add(new Flashcard("🍎", "Apple", List.of("Banana", "Orange", "Grapes")));
+        cards.add(new Flashcard("🐶", "Dog", List.of("Cat", "Cow", "Elephant")));
+        cards.add(new Flashcard("🚗", "Car", List.of("Bus", "Train", "Bike")));
+        cards.add(new Flashcard("🏠", "House", List.of("Tent", "Hut", "Palace")));
+        cards.add(new Flashcard("📱", "Phone", List.of("Tablet", "Laptop", "Watch")));
     }
 
-    public Flashcard getNextCard() {
-        if (currentIndex < flashcards.size()) {
-            Flashcard card = flashcards.get(currentIndex++);
-            shownStack.push(card);
-            return card;
+    public Flashcard getCurrentCard() {
+        return cards.get(currentIndex);
+    }
+
+    public void nextCard() {
+        if (currentIndex < cards.size() - 1) {
+            currentIndex++;
         }
-        return null;
     }
 
-    public Flashcard peekLastShown() {
-        return shownStack.isEmpty() ? null : shownStack.peek();
-    }
-
-    public List<String> getShuffledChoices(String correctAnswer) {
-        Set<String> choices = new HashSet<>();
-        choices.add(correctAnswer);
-        Random rand = new Random();
-        while (choices.size() < 4) {
-            Flashcard card = flashcards.get(rand.nextInt(flashcards.size()));
-            choices.add(card.getAnswer());
+    public void previousCard() {
+        if (currentIndex > 0) {
+            currentIndex--;
         }
-        List<String> shuffled = new ArrayList<>(choices);
-        Collections.shuffle(shuffled);
-        return shuffled;
     }
 
-    public void increaseScore() { score++; }
+    public List<String> getShuffledOptions(Flashcard card) {
+        List<String> options = new ArrayList<>(card.getOtherOptions());
+        options.add(card.getLabel());
+        Collections.shuffle(options);
+        return options;
+    }
 
-    public int getScore() { return score; }
+    public boolean checkAnswer(String guess) {
+        boolean correct = guess.equals(getCurrentCard().getLabel());
+        if (correct) {
+            score++;
+        }
+        return correct;
+    }
 
-    public int getTotalQuestions() { return currentIndex; }
+    public int getScore() {
+        return score;
+    }
 
-    public boolean hasMoreCards() {
-        return currentIndex < flashcards.size();
+    public int getTime() {
+        return time;
+    }
+
+    public void incrementTime() {
+        time++;
     }
 }

@@ -1,0 +1,26 @@
+.root {
+    -fx-font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #E3F2FD, #BBDEFB);
+}
+
+.heading {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.info {
+    -fx-font-size: 16px;
+    -fx-text-fill: #444;
+}
+
+.button {
+    -fx-font-size: 16px;
+    -fx-padding: 8 16;
+}
+
+.card-button {
+    -fx-font-size: 24px;
+    -fx-min-width: 60px;
+    -fx-min-height: 60px;
+}

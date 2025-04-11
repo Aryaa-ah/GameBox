@@ -11,6 +11,8 @@
     <top>
         <VBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
             <Label text="🚂 Alphabet Train" styleClass="heading"/>
+            <Label fx:id="timerLabel" text="Time: 10s" style="-fx-font-size: 16px; -fx-text-fill: blue;" />
+            
             <Label fx:id="scoreLabel" text="Score: 0" styleClass="score"/>
             
         </VBox>

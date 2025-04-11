@@ -16,15 +16,15 @@ public class BinarySearchView {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/gamebox/binarysearch/BinarySearchView.fxml"));
             Parent root = loader.load();
+
+            // Get the controller and set the stage for navigation
             BinarySearchController controller = loader.getController();
             controller.setStage(stage);
-            Scene scene = new Scene(root, 600, 500);
 
-           
+            Scene scene = new Scene(root, 600, 500);
             scene.getStylesheets().add(getClass().getResource("/com/gamebox/css/bst.css").toExternalForm());
 
             return scene;
-            
         } catch (Exception e) {
             e.printStackTrace();
             return null;

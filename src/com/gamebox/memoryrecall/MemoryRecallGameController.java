@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class MemoryRecallGameController implements Initializable {
     @FXML private VBox layout;
     @FXML private Label emojiLabel;
-    @FXML private Label scoreLabel;
+//    @FXML private Label scoreLabel;
     @FXML private Label roundLabel;
     @FXML private Label resultLabel;
     @FXML private Button option1, option2, option3, option4;

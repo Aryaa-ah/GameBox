@@ -9,7 +9,6 @@
             fx:controller="com.gamebox.pathfinder.PathFinderController"
             stylesheets="@/com/gamebox/css/pathfinder.css">
 
-
     <top>
         <VBox alignment="CENTER" spacing="8" BorderPane.alignment="CENTER">
             <Label text="🧭 Path Finder Game" styleClass="heading"/>

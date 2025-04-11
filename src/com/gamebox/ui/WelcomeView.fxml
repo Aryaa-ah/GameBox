@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gamebox.ui.WelcomeController"
+            stylesheets="@/com/gamebox/css/welcome.css">
+
+    <top>
+        <VBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
+            <Label text="Welcome to GameBox!" styleClass="heading"/>
+            <Label text="Helping memory, one game at a time 💙" styleClass="subheading"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="15" BorderPane.alignment="CENTER">
+            <Label text="🎯 Enjoy games that stimulate memory and fun." styleClass="description"/>
+            <Label text="🕹️ Designed with care for Alzheimer's wellness." styleClass="description"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox alignment="CENTER" spacing="12" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Button fx:id="startButton" text="🚀 Start Playing" styleClass="main-button"/>
+            <Label text="✨ Tip: Play daily to keep your brain active!" styleClass="tip"/>
+        </VBox>
+    </bottom>
+
+</BorderPane>

@@ -21,7 +21,7 @@ public class ReactionGameController implements Initializable {
     @FXML private Label resultLabel;
     @FXML private Label roundLabel;
     @FXML private Button exitButton;
-
+    @FXML private Button infoButton;
     private ReactionGame game;
     private Stage stage;
     private long startTime;
@@ -92,5 +92,20 @@ public class ReactionGameController implements Initializable {
         exit.setOnAction(e -> stage.setScene(new MainMenuView(stage).getScene()));
 
         layout.getChildren().addAll(playAgain, exit);
+    }
+    @FXML
+    private void showInfoPopup() {
+        String infoMessage =
+            "Card Match is a classic memory game designed to:\n" +
+            "• Improve short-term memory 🧠\n" +
+            "• Enhance pattern recognition 🔍\n" +
+            "• Strengthen visual recall 👁️\n\n" +
+            "Find matching pairs as quickly and accurately as possible!\n\n" +
+            "GameBox makes cognitive training fun and accessible.";
+
+        String title = "Card Match Game";
+
+        // Call utility method
+        com.gamebox.utils.InfoPopUPUtil.showGameBoxInfo(infoMessage, title);
     }
 }

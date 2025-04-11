@@ -23,6 +23,7 @@ public class MemoryRecallGameController implements Initializable {
     @FXML private Label resultLabel;
     @FXML private Button option1, option2, option3, option4;
     @FXML private Button exitButton;
+    @FXML private Button infoButton;
 
     private final Button[] optionButtons = new Button[4];
     private MemoryRecallGame game;
@@ -102,5 +103,21 @@ public class MemoryRecallGameController implements Initializable {
         exit.setOnAction(e -> stage.setScene(new MainMenuView(stage).getScene()));
 
         layout.getChildren().addAll(playAgain, exit);
+    }
+    
+    @FXML
+    private void showInfoPopup() {
+        String infoMessage =
+            "Card Match is a classic memory game designed to:\n" +
+            "• Improve short-term memory 🧠\n" +
+            "• Enhance pattern recognition 🔍\n" +
+            "• Strengthen visual recall 👁️\n\n" +
+            "Find matching pairs as quickly and accurately as possible!\n\n" +
+            "GameBox makes cognitive training fun and accessible.";
+
+        String title = "Card Match Game";
+
+        // Call utility method
+        com.gamebox.utils.InfoPopUPUtil.showGameBoxInfo(infoMessage, title);
     }
 }

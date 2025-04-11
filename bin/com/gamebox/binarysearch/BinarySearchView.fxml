@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gamebox.binarysearch.BinarySearchController"
+      alignment="CENTER" spacing="15">
+
+    <Label text="🌳 Binary Search Tree Game" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label fx:id="feedbackLabel" styleClass="bst-feedback"/>
+    <Label fx:id="guessLabel" styleClass="bst-guess"/>
+    <FlowPane fx:id="numberButtons" hgap="10" vgap="10" alignment="CENTER"/>
+    
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="nextButton" text="🔁 Next Round" styleClass="bst-button"/>
+        <Button fx:id="exitButton" text="🏠 Exit to Menu" styleClass="bst-button"/>
+    </HBox>
+</VBox>

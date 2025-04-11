@@ -1,135 +1,166 @@
 package com.gamebox.cardmatch;
 
 import com.gamebox.ui.MainMenuView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class CardMatchController implements Initializable {
-    @FXML private GridPane gridPane;
-    @FXML private Button exitButton;
+public class CardMatchController {
+    @FXML private GridPane cardGrid;
+    @FXML private Label infoLabel;
+    @FXML private Button restartBtn;
+    @FXML private Button exitBtn;
+    @FXML private Button infoButton;
     @FXML private Label timerLabel;
 
-    private final Button[] buttons = new Button[12];
-    private final boolean[] flipped = new boolean[12];
     private CardMatchGame game;
-    private int lastFlipped = -1;
     private Stage stage;
+    private Map<Button, String> buttonToSymbol;
+    private Button firstSelected = null;
+    private int moveCount = 0;
+    private boolean useTimer = false;
+    private Timeline timer;
+    private int elapsedSeconds = 0;
 
-    public void setStage(Stage stage) {
+    public void setStage(Stage stage, boolean useTimer) {
         this.stage = stage;
-        askTimerMode();
+        this.useTimer = useTimer;
+        initializeGame();
+
+        if (useTimer) {
+            startTimer();
+        }
     }
 
-    private void askTimerMode() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Start With Timer?");
-        alert.setHeaderText("Do you want to play with a timer?");
-        alert.setContentText("Choose your game mode.");
+    private void initializeGame() {
+        game = new CardMatchGame();
+        buttonToSymbol = new HashMap<>();
+        moveCount = 0;
+        elapsedSeconds = 0;
 
-        ButtonType yes = new ButtonType("✅ Yes");
-        ButtonType no = new ButtonType("🚫 No");
-        alert.getButtonTypes().setAll(yes, no);
+        infoLabel.setText("Moves: 0");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        boolean useTimer = result.isPresent() && result.get() == yes;
+        cardGrid.getChildren().clear();
+        List<String> cards = game.getShuffledCards();
+        int index = 0;
 
-        startGame(useTimer);
-        if (useTimer) startTimerThread();
-    }
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                String symbol = cards.get(index++);
+                Button btn = new Button("❓");
+                btn.getStyleClass().add("card-button");
 
-    private void startGame(boolean useTimer) {
-        game = new CardMatchGame(useTimer);
-        var cards = game.getShuffledCards();
-
-        for (int i = 0; i < 12; i++) {
-            int idx = i;
-            Button btn = new Button("❓");
-            btn.setPrefSize(80, 80);
-            btn.setStyle("-fx-font-size: 24px");
-
-            btn.setOnAction(e -> handleFlip(idx));
-            buttons[i] = btn;
-            flipped[i] = false;
-
-            gridPane.add(btn, i % 4, i / 4);
+                btn.setOnAction(e -> handleCardClick(btn, symbol));
+                cardGrid.add(btn, col, row);
+                buttonToSymbol.put(btn, symbol);
+            }
         }
 
-        exitButton.setOnAction(e -> {
+        restartBtn.setOnAction(e -> {
+            if (timer != null) timer.stop();
+            setStage(stage, useTimer); // restart fresh
+        });
+
+        exitBtn.setOnAction(e -> {
+            if (timer != null) timer.stop();
             stage.setScene(new MainMenuView(stage).getScene());
         });
-
-        timerLabel.setVisible(useTimer);
     }
 
-    private void handleFlip(int index) {
-        if (game.isMatched(index) || flipped[index]) return;
+    private void handleCardClick(Button btn, String symbol) {
+        if (btn.getText().equals(symbol) || (firstSelected != null && btn == firstSelected)) return;
 
-        buttons[index].setText(game.getShuffledCards().get(index));
-        flipped[index] = true;
+        btn.setText(symbol);
 
-        if (lastFlipped == -1) {
-            lastFlipped = index;
+        if (firstSelected == null) {
+            firstSelected = btn;
         } else {
-            game.incrementMoves();
-            int prev = lastFlipped;
-            lastFlipped = -1;
+            moveCount++;
+            infoLabel.setText("Moves: " + moveCount);
 
-            if (game.isMatch(prev, index)) {
-                game.markMatched(prev, index);
-                if (game.allMatched()) showGameOver();
+            String firstSymbol = buttonToSymbol.get(firstSelected);
+            if (firstSymbol.equals(symbol)) {
+                firstSelected = null;
+                if (gameOver()) {
+                    showResultDialog();
+                }
             } else {
-                new Thread(() -> {
-                    try { Thread.sleep(600); } catch (InterruptedException ignored) {}
-                    javafx.application.Platform.runLater(() -> {
-                        buttons[prev].setText("❓");
-                        buttons[index].setText("❓");
-                        flipped[prev] = false;
-                        flipped[index] = false;
-                    });
-                }).start();
+                Timer delay = new Timer();
+                delay.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        javafx.application.Platform.runLater(() -> {
+                            firstSelected.setText("❓");
+                            btn.setText("❓");
+                            firstSelected = null;
+                        });
+                    }
+                }, 600);
             }
         }
     }
 
-    private void showGameOver() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Over");
-        alert.setHeaderText("🎉 All Matches Found!");
-
-        String result = "Moves Taken: " + game.getMoves();
-        if (game.isTimerEnabled()) {
-            result += "\nTime: " + game.getElapsedTimeSeconds() + "s";
-        }
-
-        alert.setContentText(result);
-        alert.showAndWait();
-        stage.setScene(new MainMenuView(stage).getScene());
+    private boolean gameOver() {
+        return cardGrid.getChildren().stream()
+                .filter(node -> node instanceof Button)
+                .map(node -> (Button) node)
+                .allMatch(btn -> !btn.getText().equals("❓"));
     }
 
-    private void startTimerThread() {
-        Thread timerThread = new Thread(() -> {
-            while (!game.allMatched()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignored) {}
-                javafx.application.Platform.runLater(() -> {
-                    timerLabel.setText("Time: " + game.getElapsedTimeSeconds() + "s");
-                });
+    private void showResultDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("🎉 Game Complete!");
+        alert.setHeaderText("Well done!");
+
+        String timeText = useTimer ? "\nTime: " + elapsedSeconds + "s" : "";
+        alert.setContentText("You completed the game in " + moveCount + " moves." + timeText);
+
+        ButtonType replay = new ButtonType("🔁 Restart");
+        ButtonType menu = new ButtonType("🏠 Main Menu");
+
+        alert.getButtonTypes().setAll(replay, menu);
+        alert.showAndWait().ifPresent(result -> {
+            if (result == replay) {
+                if (timer != null) timer.stop();
+                setStage(stage, useTimer);
+            } else {
+                if (timer != null) timer.stop();
+                stage.setScene(new MainMenuView(stage).getScene());
             }
         });
-        timerThread.setDaemon(true);
-        timerThread.start();
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // handled in setStage()
+   
+    
+    @FXML
+    private void showInfoPopup() {
+        String infoMessage =
+            "Card Match is a classic memory game designed to:\n" +
+            "• Improve short-term memory 🧠\n" +
+            "• Enhance pattern recognition 🔍\n" +
+            "• Strengthen visual recall 👁️\n\n" +
+            "Find matching pairs as quickly and accurately as possible!\n\n" +
+            "GameBox makes cognitive training fun and accessible.";
+
+        String title = "Card Match Game";
+
+        // Call utility method
+        com.gamebox.utils.InfoPopUPUtil.showGameBoxInfo(infoMessage, title);
     }
+
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            elapsedSeconds++;
+            timerLabel.setText("Time: " + elapsedSeconds + "s");
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+    }
+
 }

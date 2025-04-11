@@ -1,0 +1,42 @@
+.root {
+    -fx-font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #E3F2FD, #BBDEFB);
+}
+
+.heading {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0D47A1;
+}
+
+.reaction-button {
+    -fx-font-size: 24px;
+    -fx-padding: 12px 30px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.reaction-button:disabled {
+    -fx-background-color: #A5D6A7;
+}
+
+.result {
+    -fx-font-size: 20px;
+    -fx-text-fill: #1A237E;
+}
+
+.info {
+    -fx-font-size: 18px;
+    -fx-text-fill: #37474F;
+}
+
+.exit-btn {
+    -fx-font-size: 16px;
+    -fx-padding: 8px 20px;
+    -fx-background-color: #EF5350;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}

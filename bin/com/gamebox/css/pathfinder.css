@@ -1,0 +1,33 @@
+.root {
+    -fx-font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #E3F2FD, #BBDEFB);
+}
+
+.heading {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+    -fx-padding: 12 0 4 0;
+}
+
+.info {
+    -fx-font-size: 16px;
+    -fx-text-fill: #34495E;
+}
+
+.button {
+    -fx-background-color: #2980B9;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 18;
+    -fx-background-radius: 8;
+}
+
+.button:hover {
+    -fx-background-color: #3498DB;
+}
+
+.grid-cell {
+    -fx-border-color: #BDC3C7;
+    -fx-alignment: center;
+}

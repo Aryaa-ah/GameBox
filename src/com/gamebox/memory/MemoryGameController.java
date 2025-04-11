@@ -5,145 +5,117 @@ import com.gamebox.ui.MainMenuView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.net.URL;
 import java.util.*;
 
-public class MemoryGameController implements Initializable {
-    @FXML private VBox layout;
-    @FXML private Label emojiLabel, scoreLabel, timerLabel, resultLabel;
-    @FXML private Button choice0, choice1, choice2, choice3;
-    @FXML private Button nextBtn, backBtn, exitBtn;
+public class MemoryGameController {
+    @FXML private Label emojiLabel;
+    @FXML private Label scoreLabel;
+    @FXML private Label timerLabel;
+    @FXML private Label resultLabel;
 
-    private final Button[] choiceButtons = new Button[4];
+    @FXML private Button option1;
+    @FXML private Button option2;
+    @FXML private Button option3;
+    @FXML private Button option4;
+    @FXML private Button nextBtn;
+    @FXML private Button backBtn;
+    @FXML private Button exitBtn;
+    @FXML private Button infoButton;
+
+
     private Stage stage;
-    private boolean useTimer;
-    private Flashcard currentCard;
     private MemoryGame game;
-    private Timeline timer;
-    private int timeLeft = 5;
+    private List<Button> buttons;
+    private Timeline timeline;
+    private boolean useTimer;
 
     public void setStage(Stage stage, boolean useTimer) {
         this.stage = stage;
         this.useTimer = useTimer;
-        timerLabel.setVisible(useTimer);
-        game = new MemoryGame();
-        loadNextCard();
+        this.game = new MemoryGame();
+        this.buttons = Arrays.asList(option1, option2, option3, option4);
+
+        setupHandlers();
+        loadCard();
+
+        if (useTimer) {
+            startTimer();
+        }
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        choiceButtons[0] = choice0;
-        choiceButtons[1] = choice1;
-        choiceButtons[2] = choice2;
-        choiceButtons[3] = choice3;
+    private void setupHandlers() {
+        for (Button btn : buttons) {
+            btn.setOnAction(e -> handleGuess(btn.getText()));
+        }
 
-        nextBtn.setOnAction(e -> loadNextCard());
-        backBtn.setOnAction(e -> loadLastCard());
+        nextBtn.setOnAction(e -> {
+            resultLabel.setVisible(false);
+            game.nextCard();
+            loadCard();
+        });
+
+        backBtn.setOnAction(e -> {
+            resultLabel.setVisible(false);
+            game.previousCard();
+            loadCard();
+        });
+
         exitBtn.setOnAction(e -> stage.setScene(new MainMenuView(stage).getScene()));
-
-        for (Button btn : choiceButtons) {
-            btn.setOnAction(e -> handleChoice(((Button)e.getSource()).getText()));
-        }
     }
 
-    private void loadNextCard() {
-        stopTimer();
-        if (!game.hasMoreCards()) {
-            emojiLabel.setText("✅");
-            resultLabel.setText("Game Over! Final Score: " + game.getScore() + "/" + game.getTotalQuestions());
-            for (Button btn : choiceButtons) btn.setDisable(true);
-            showEndPopup();
-            return;
-        }
-
-        currentCard = game.getNextCard();
+    private void loadCard() {
+        Flashcard currentCard = game.getCurrentCard();
         emojiLabel.setText(currentCard.getEmoji());
-        List<String> choices = game.getShuffledChoices(currentCard.getAnswer());
+        List<String> options = game.getShuffledOptions(currentCard);
+
         for (int i = 0; i < 4; i++) {
-            choiceButtons[i].setText(choices.get(i));
-            choiceButtons[i].setDisable(false);
+            buttons.get(i).setText(options.get(i));
+            buttons.get(i).setDisable(false);
         }
 
-        resultLabel.setText("");
-        if (useTimer) startTimer();
+        scoreLabel.setText("Score: " + game.getScore());
+        if (useTimer) timerLabel.setText("Time: " + game.getTime());
     }
 
-    private void handleChoice(String selected) {
-        stopTimer();
-        for (Button btn : choiceButtons) btn.setDisable(true);
-        if (selected.equals(currentCard.getAnswer())) {
-            resultLabel.setText("✅ Correct!");
-            game.increaseScore();
-        } else {
-            resultLabel.setText("❌ Wrong! Answer: " + currentCard.getAnswer());
+    private void handleGuess(String selected) {
+        boolean correct = game.checkAnswer(selected);
+        resultLabel.setVisible(true);
+        resultLabel.setText(correct ? "✅ Correct!" : "❌ Wrong! Answer: " + game.getCurrentCard().getLabel());
+        resultLabel.setStyle(correct ? "-fx-text-fill: green;" : "-fx-text-fill: red;");
+
+        for (Button btn : buttons) {
+            btn.setDisable(true);
         }
+
         scoreLabel.setText("Score: " + game.getScore());
     }
 
-    private void loadLastCard() {
-        stopTimer();
-        Flashcard last = game.peekLastShown();
-        if (last != null) {
-            emojiLabel.setText(last.getEmoji());
-            resultLabel.setText("Last Seen: " + last.getAnswer());
-        } else {
-            resultLabel.setText("No history available.");
-        }
-    }
-
     private void startTimer() {
-        timeLeft = 5;
-        timerLabel.setText("Time: " + timeLeft);
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            timeLeft--;
-            timerLabel.setText("Time: " + timeLeft);
-            if (timeLeft == 0) {
-                stopTimer();
-                resultLabel.setText("⏱️ Time's up! Answer: " + currentCard.getAnswer());
-                for (Button btn : choiceButtons) btn.setDisable(true);
-            }
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            game.incrementTime();
+            timerLabel.setText("Time: " + game.getTime());
         }));
-        timer.setCycleCount(5);
-        timer.play();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
+    
+    @FXML
+    private void showInfoPopup() {
+        String infoMessage =
+            "Card Match is a classic memory game designed to:\n" +
+            "• Improve short-term memory 🧠\n" +
+            "• Enhance pattern recognition 🔍\n" +
+            "• Strengthen visual recall 👁️\n\n" +
+            "Find matching pairs as quickly and accurately as possible!\n\n" +
+            "GameBox makes cognitive training fun and accessible.";
 
-    private void stopTimer() {
-        if (timer != null) timer.stop();
-    }
+        String title = "Card Match Game";
 
-    private void showEndPopup() {
-        Stage popup = new Stage();
-        popup.setTitle("Game Finished");
-        popup.initOwner(stage);
-
-        Label message = new Label("You've completed all flashcards.\nWhat would you like to do next?");
-        Button playAgain = new Button("▶️ Play Again");
-        Button exit = new Button("❌ Exit to Menu");
-
-        playAgain.setOnAction(e -> {
-            popup.close();
-            MemoryGameView view = new MemoryGameView(stage);
-            stage.setScene(view.getStartupScene());
-        });
-
-        exit.setOnAction(e -> {
-            popup.close();
-            stage.setScene(new MainMenuView(stage).getScene());
-        });
-
-        VBox box = new VBox(15, message, playAgain, exit);
-        box.setAlignment(Pos.CENTER);
-        box.setStyle("-fx-padding: 20;");
-        popup.setScene(new Scene(box, 300, 160));
-        popup.initModality(javafx.stage.Modality.WINDOW_MODAL);
-        popup.showAndWait();
+        // Call utility method
+        com.gamebox.utils.InfoPopUPUtil.showGameBoxInfo(infoMessage, title);
     }
 }

@@ -18,7 +18,6 @@
     <Label fx:id="emojiLabel" text="Which emoji did you see?" wrapText="true"
        maxWidth="600" styleClass="emoji-label"/>
     <Label fx:id="roundLabel" text="Round: 1/5" styleClass="info-label"/>
-    <Label fx:id="scoreLabel" text="Score: 0" styleClass="info-label"/>
 
     <VBox spacing="15" alignment="CENTER">
         <HBox spacing="15" alignment="CENTER">

@@ -63,7 +63,7 @@ public class MemoryRecallGameController implements Initializable {
             btn.setText("");
         }
 
-        scoreLabel.setText("Score: " + game.getScore());
+       // scoreLabel.setText("Score: " + game.getScore());
         roundLabel.setText("Round: " + game.getRound() + "/" + game.getTotalRounds());
 
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
